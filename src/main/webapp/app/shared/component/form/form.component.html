@@ -1,0 +1,24 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()">
+    <ng-container #viewContainer></ng-container>
+    <div class="form-group text-center row mb-0">
+        <div class="col-12 col-sm-3"></div>
+        <div class="col-12 col-lg-6 col-sm-8 text-right">
+            <ng-container>
+                <button *ngIf="formType === 'update'" type="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i> Update
+                </button>
+            </ng-container>
+            <ng-container>
+                <button *ngIf="formType === 'update'" type="button" class="btn btn-primary ml-2" (click)="delete()">
+                    <i class="fa fa-trash"></i> Delete
+                </button>
+            </ng-container>
+            <button *ngIf="formType === 'add'" type="submit" class="btn btn-primary">
+                <i class="fa fa-save"></i> Save
+            </button>
+            <button class="btn btn-dark ml-2" type="button" (click)="cancel()">
+                <i class="fa fa-ban"></i> Cancel
+            </button>
+        </div>
+    </div>
+</form>

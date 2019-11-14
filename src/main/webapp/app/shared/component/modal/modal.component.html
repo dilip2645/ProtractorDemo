@@ -1,0 +1,16 @@
+<div class="modal" role="dialog" tabindex="-1" *ngIf="visible">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header btn-primary text-white rounded-0">
+                <h5>{{headerTitle}}</h5>
+                <button class="text-white close" data-dismiss="modal" type="button" aria-label="Close" (click)="close()">×</button>
+            </div>
+            <div class="modal-body">
+                <ng-content select="[sun-modal-body]"></ng-content>
+            </div>
+            <div class="modal-footer">
+                <ng-content select="[sun-modal-footer]"></ng-content>
+            </div>
+        </div>
+    </div>
+</div>

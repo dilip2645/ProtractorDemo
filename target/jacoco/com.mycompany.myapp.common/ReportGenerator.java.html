@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReportGenerator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Protractor Testing</a> &gt; <a href="index.source.html" class="el_package">com.mycompany.myapp.common</a> &gt; <span class="el_source">ReportGenerator.java</span></div><h1>ReportGenerator.java</h1><pre class="source lang-java linenums">package com.mycompany.myapp.common;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Component
+public class ReportGenerator {
+
+    private final CSVGenerator csvGenerator;
+    private final PDFGenerator pdfGenerator;
+    private final XLSGeneretorLocal xlsGenerator;
+
+    @Autowired
+    public ReportGenerator(
+            CSVGenerator csvGenerator,
+            PDFGenerator pdfGenerator,
+<span class="nc" id="L33">            XLSGeneretorLocal xlsGenerator) {</span>
+<span class="nc" id="L34">        this.csvGenerator = csvGenerator;</span>
+<span class="nc" id="L35">        this.pdfGenerator = pdfGenerator;</span>
+<span class="nc" id="L36">        this.xlsGenerator = xlsGenerator;</span>
+<span class="nc" id="L37">    }</span>
+
+    /***
+     * This method use to generate listing report, for PDF report it required
+     * generic XSL
+     *
+     * @param reportData
+     *            list of records to be display in report file
+     * @param exportType
+     *            Export type
+     * @param reportHeader
+     *            report data headers
+     * @param workBookName
+     *            Workbook name
+     * @param fileName
+     *            File name
+     * @param reportTitle
+     *            Report Title for PDF report
+     * @param excludeHeaders
+     *            key name which needs to exclude
+     * @param xslFile
+     *            XSL File for PDF report generation if null then default XSL
+     *            file will use
+     * @return report
+     * @throws URISyntaxException
+     */
+    public ReportFileType generateListingReport(
+            List&lt;?&gt; reportData,
+            String exportType,
+            Map&lt;String, String&gt; reportHeader,
+            String workBookName,
+            String fileName,
+            String reportTitle,
+            List&lt;String&gt; excludeHeaders,
+            InputStream xslFile) {
+
+<span class="nc" id="L73">        HttpHeaders httpHeaders = new HttpHeaders();</span>
+<span class="nc" id="L74">        File outputFile = null;</span>
+        ReportFileType report;
+<span class="nc" id="L76">        InputStream xslfile=null;</span>
+        try {
+<span class="nc bnc" id="L78" title="All 2 branches missed.">            if (Constants.PDF.equals(exportType)) {</span>
+<span class="nc" id="L79">            	File logoAsFile = File.createTempFile(&quot;sun_logo&quot;, &quot;.jpg&quot;);</span>
+<span class="nc" id="L80">				FileUtils.copyInputStreamToFile(new ClassPathResource(&quot;sun_logo.jpg&quot;).getInputStream(), logoAsFile);</span>
+<span class="nc" id="L81">                DigitalSignatureBean signatureBean = new DigitalSignatureBean();</span>
+<span class="nc" id="L82">                signatureBean.setFileName(fileName);</span>
+<span class="nc" id="L83">                signatureBean.setReportTitle(reportTitle);</span>
+<span class="nc" id="L84">                outputFile = pdfGenerator.createPDF(</span>
+                        reportData,
+                        xslfile,
+<span class="nc" id="L87">                        logoAsFile.getAbsolutePath(),</span>
+                        null,
+                        signatureBean,
+<span class="nc" id="L90">                        reportHeader.values().stream().collect(Collectors.toList()),</span>
+                        excludeHeaders);
+<span class="nc" id="L92">                httpHeaders.setContentType(MediaType.APPLICATION_PDF);</span>
+
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            } else if (Constants.XLS.equals(exportType)) {</span>
+
+<span class="nc" id="L96">                ObjectMapper mapper = new ObjectMapper();</span>
+<span class="nc" id="L97">                ByteArrayOutputStream outStream = new ByteArrayOutputStream();</span>
+<span class="nc" id="L98">                mapper.writeValue(outStream, reportData);</span>
+
+<span class="nc" id="L100">                outputFile = xlsGenerator.createExcel(</span>
+<span class="nc" id="L101">                        new JSONArray(new String(outStream.toByteArray())),</span>
+                        reportHeader,
+                        fileName,
+                        workBookName);
+<span class="nc" id="L105">                httpHeaders.setContentType(MediaType.parseMediaType(Constants.MEDIA_TYPE_XLS));</span>
+
+<span class="nc bnc" id="L107" title="All 2 branches missed.">            } else if (Constants.CSV.equals(exportType)) {</span>
+
+<span class="nc" id="L109">                ObjectMapper mapper = new ObjectMapper();</span>
+<span class="nc" id="L110">                ByteArrayOutputStream outStream = new ByteArrayOutputStream();</span>
+<span class="nc" id="L111">                mapper.writeValue(outStream, reportData);</span>
+<span class="nc" id="L112">                outputFile = csvGenerator</span>
+<span class="nc" id="L113">                        .createCSV(</span>
+<span class="nc" id="L114">                                new JSONArray(new String(outStream.toByteArray())),</span>
+                                reportHeader,
+                                fileName);
+<span class="nc" id="L117">                httpHeaders.setContentType(MediaType.parseMediaType(Constants.MEDIA_TYPE_CSV));</span>
+
+            }
+<span class="nc bnc" id="L120" title="All 2 branches missed.">            if (outputFile == null) {</span>
+<span class="nc" id="L121">                throw new CustomException(&quot;Error in generating &quot; + exportType + &quot; report.&quot;);</span>
+            } else {
+<span class="nc" id="L123">                httpHeaders.setContentDispositionFormData(Constants.FILE, outputFile.getName());</span>
+            }
+<span class="nc" id="L125">            report = new ReportFileType();</span>
+<span class="nc" id="L126">            report.setHttpHeader(httpHeaders);</span>
+<span class="nc" id="L127">            report.setReportFile(outputFile);</span>
+<span class="nc" id="L128">            return report;</span>
+<span class="nc" id="L129">        } catch (IOException | CustomException e) {</span>
+<span class="nc" id="L130">            throw new RuntimeException(&quot;Error while generating report file.&quot;, e);</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

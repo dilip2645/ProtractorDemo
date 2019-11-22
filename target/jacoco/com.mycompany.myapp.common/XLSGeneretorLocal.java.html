@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>XLSGeneretorLocal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Protractor Testing</a> &gt; <a href="index.source.html" class="el_package">com.mycompany.myapp.common</a> &gt; <span class="el_source">XLSGeneretorLocal.java</span></div><h1>XLSGeneretorLocal.java</h1><pre class="source lang-java linenums">package com.mycompany.myapp.common;
+
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class XLSGeneretorLocal {
+
+	private FileUtility fileUtil;
+	
+	@Autowired
+    public XLSGeneretorLocal(FileUtility fileUtilityLocal) {
+<span class="nc" id="L33">		super();</span>
+<span class="nc" id="L34">		this.fileUtil = fileUtilityLocal;</span>
+<span class="nc" id="L35">	}</span>
+	
+	/**
+     * This method generates XLS file with given report data and report headers
+     * 
+     * @param data
+     *            JSON array of Report data
+     * @param headers
+     *            report header name
+     * @param propertyFileName
+     *            property file name
+     * @param workbookName
+     *            workbook name
+     * @return xlsFile returns generated XLS file
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws JSONException
+     * @throws CustomException
+     * 
+     */
+
+    public File createExcel(
+            JSONArray data,
+            Map&lt;String, String&gt; headers,
+            String fileName,
+            String woorkbookName) throws CustomException, IOException {
+
+<span class="nc" id="L62">        int rowCount = 0;</span>
+        Row row;
+<span class="nc" id="L64">        int cellNum = 0;</span>
+<span class="nc" id="L65">        File outputFile = fileUtil.createFile(fileName,Constants.XLSX_EXTENTION);</span>
+<span class="nc" id="L66">        try (XSSFWorkbook workbook = new XSSFWorkbook();</span>
+<span class="nc" id="L67">            FileOutputStream outputStream = new FileOutputStream(outputFile)) {</span>
+<span class="nc" id="L68">            XSSFSheet sheet = workbook.createSheet(woorkbookName);</span>
+<span class="nc" id="L69">            CellStyle style = workbook.createCellStyle();</span>
+<span class="nc" id="L70">            CellStyle boldStyle = workbook.createCellStyle();</span>
+<span class="nc" id="L71">            Font font = workbook.createFont();</span>
+<span class="nc" id="L72">            font.setBold(true);</span>
+<span class="nc" id="L73">            boldStyle.setFont(font);</span>
+<span class="nc" id="L74">            row = sheet.createRow(rowCount);</span>
+<span class="nc" id="L75">            DataFormat dataformater = workbook.createDataFormat();</span>
+
+<span class="nc bnc" id="L77" title="All 2 branches missed.">            if (data.length() &lt;= 0) {</span>
+<span class="nc" id="L78">                Cell cell = row.createCell(cellNum);</span>
+<span class="nc" id="L79">                cell.setCellStyle(boldStyle);</span>
+<span class="nc" id="L80">                cell.setCellValue(&quot;No records found&quot;);</span>
+<span class="nc" id="L81">            } else {</span>
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">                for (String header : headers.values()) {</span>
+<span class="nc" id="L84">                    Cell cell = row.createCell(cellNum);</span>
+<span class="nc" id="L85">                    cell.setCellStyle(boldStyle);</span>
+<span class="nc" id="L86">                    sheet.autoSizeColumn(cellNum);</span>
+<span class="nc" id="L87">                    cell.setCellValue(header);</span>
+<span class="nc" id="L88">                    cellNum++;</span>
+<span class="nc" id="L89">                }</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">                for (int i = 0; i &lt; data.length(); i++) {</span>
+<span class="nc" id="L91">                    rowCount++;</span>
+<span class="nc" id="L92">                    row = sheet.createRow(rowCount);</span>
+<span class="nc" id="L93">                    JSONObject column = data.getJSONObject(i);</span>
+<span class="nc" id="L94">                    cellNum = 0;</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                    for (String header : headers.keySet()) {</span>
+<span class="nc" id="L96">                        Cell cell = row.createCell(cellNum);</span>
+<span class="nc" id="L97">                        cell.setCellValue(column.get(header).toString());</span>
+<span class="nc" id="L98">                        cellNum++;</span>
+<span class="nc" id="L99">                    }</span>
+                }
+<span class="nc bnc" id="L101" title="All 2 branches missed.">                for (int i = 0; i &lt; data.length(); i++) {</span>
+<span class="nc" id="L102">                	sheet.autoSizeColumn(i);</span>
+                }
+                
+            }
+<span class="nc" id="L106">            workbook.write(outputStream);</span>
+<span class="nc" id="L107">        } catch (IOException e) {</span>
+<span class="nc" id="L108">            throw new CustomException(&quot;Error creating xls file &quot; + e);</span>
+<span class="nc" id="L109">        }</span>
+<span class="nc" id="L110">        return outputFile;</span>
+    }
+
+    /**
+     * This method generates XLS file with given report data and report headers
+     * 
+     * @param data
+     *            JSON object of Report data
+     * @param reportHeaders
+     *            report header name
+     * @param transactionInfo
+     *            Transaction information
+     * @param transactionDetails
+     *            TransactionDetails
+     * @param propertyFileName
+     *            property file name
+     * @param workbookName
+     *            WorkbookName
+     * @return xlsFile returns generated XLS file
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws JSONException
+     * @throws CustomException
+     * 
+     */
+    public File createExcel1(
+            JSONObject data,
+            Map&lt;String, String&gt; reportHeaders,
+            Map&lt;String, String&gt; transactionInfo,
+            Map&lt;String, String&gt; transactionDetails,
+            String fileName,
+            String workbookName)
+            throws IOException, CustomException {
+
+<span class="nc" id="L144">        int rowCount = 0;</span>
+        Row row;
+<span class="nc" id="L146">        int cellNum = 0;</span>
+<span class="nc" id="L147">        JSONArray reportData = null;</span>
+<span class="nc" id="L148">        JSONObject details = null;</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        for (Object keys : data.keySet()) {</span>
+
+<span class="nc bnc" id="L151" title="All 2 branches missed.">            if (data.get(keys.toString()) instanceof JSONObject) {</span>
+<span class="nc" id="L152">                details = data.getJSONObject(keys.toString());</span>
+            }
+<span class="nc bnc" id="L154" title="All 2 branches missed.">            if (data.get(keys.toString()) instanceof JSONArray) {</span>
+<span class="nc" id="L155">                reportData = data.getJSONArray((String) data.keys().next());</span>
+            }
+<span class="nc" id="L157">        }</span>
+
+<span class="nc" id="L159">        File outputFile = fileUtil.createFile(fileName,Constants.XLSX_EXTENTION);</span>
+
+<span class="nc" id="L161">        try (XSSFWorkbook workbook = new XSSFWorkbook();</span>
+<span class="nc" id="L162">                FileOutputStream outputStream = new FileOutputStream(outputFile)) {</span>
+<span class="nc" id="L163">            CellStyle style = workbook.createCellStyle();</span>
+<span class="nc" id="L164">            Font font = workbook.createFont();</span>
+<span class="nc" id="L165">            font.setBold(true);</span>
+<span class="nc" id="L166">            style.setFont(font);</span>
+<span class="nc" id="L167">            XSSFSheet sheet = workbook.createSheet(workbookName);</span>
+            Cell cell;
+<span class="nc" id="L169">            row = sheet.createRow(rowCount);</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">            if (reportData.length() &lt;= 0) {</span>
+<span class="nc" id="L171">                rowCount++;</span>
+<span class="nc" id="L172">                row = sheet.createRow(rowCount);</span>
+<span class="nc" id="L173">                cell = row.createCell(cellNum);</span>
+<span class="nc" id="L174">                cell.setCellValue(&quot;No records found&quot;);</span>
+            } else {
+<span class="nc bnc" id="L176" title="All 2 branches missed.">                for (Entry&lt;String, String&gt; entry : transactionDetails.entrySet()) {</span>
+<span class="nc" id="L177">                    rowCount++;</span>
+<span class="nc" id="L178">                    row = sheet.createRow(rowCount);</span>
+<span class="nc" id="L179">                    cell = row.createCell(cellNum);</span>
+<span class="nc" id="L180">                    cell.setCellStyle(style);</span>
+<span class="nc" id="L181">                    cell.setCellValue(entry.getValue());</span>
+<span class="nc" id="L182">                    cellNum++;</span>
+<span class="nc" id="L183">                    cell = row.createCell(cellNum);</span>
+<span class="nc" id="L184">                    cell.setCellValue(details.getString(entry.getKey()));</span>
+<span class="nc" id="L185">                    cellNum = 0;</span>
+
+<span class="nc" id="L187">                }</span>
+<span class="nc" id="L188">                rowCount++;</span>
+<span class="nc" id="L189">                row = sheet.createRow(rowCount);</span>
+<span class="nc bnc" id="L190" title="All 2 branches missed.">                for (int i = 0; i &lt; reportData.length(); i++) {</span>
+<span class="nc" id="L191">                    JSONObject column = reportData.getJSONObject(i);</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">                    for (Entry&lt;String, String&gt; entry : transactionInfo.entrySet()) {</span>
+<span class="nc" id="L193">                        rowCount++;</span>
+<span class="nc" id="L194">                        row = sheet.createRow(rowCount);</span>
+<span class="nc" id="L195">                        cell = row.createCell(cellNum);</span>
+<span class="nc" id="L196">                        cell.setCellStyle(style);</span>
+<span class="nc" id="L197">                        cell.setCellValue(entry.getValue());</span>
+<span class="nc" id="L198">                        cellNum++;</span>
+<span class="nc" id="L199">                        cell = row.createCell(cellNum);</span>
+<span class="nc" id="L200">                        cell.setCellValue(column.getString(entry.getKey()));</span>
+<span class="nc" id="L201">                        cellNum = 0;</span>
+<span class="nc" id="L202">                    }</span>
+<span class="nc" id="L203">                    rowCount++;</span>
+<span class="nc" id="L204">                    row = sheet.createRow(rowCount);</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">                    for (Entry&lt;String, String&gt; entry : reportHeaders.entrySet()) {</span>
+<span class="nc" id="L206">                        cell = row.createCell(cellNum);</span>
+<span class="nc" id="L207">                        cell.setCellStyle(style);</span>
+<span class="nc" id="L208">                        cell.setCellValue(entry.getValue());</span>
+<span class="nc" id="L209">                        cellNum++;</span>
+<span class="nc" id="L210">                    }</span>
+<span class="nc" id="L211">                    cellNum = 0;</span>
+<span class="nc" id="L212">                    rowCount++;</span>
+<span class="nc" id="L213">                    row = sheet.createRow(rowCount);</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">                    for (Object key : reportHeaders.keySet()) {</span>
+<span class="nc" id="L215">                        cell = row.createCell(cellNum);</span>
+<span class="nc" id="L216">                        cell.setCellValue(column.getString((String) key));</span>
+<span class="nc" id="L217">                        cellNum++;</span>
+<span class="nc" id="L218">                    }</span>
+<span class="nc" id="L219">                    rowCount++;</span>
+<span class="nc" id="L220">                    row = sheet.createRow(rowCount);</span>
+<span class="nc" id="L221">                    sheet.autoSizeColumn(cellNum);</span>
+<span class="nc" id="L222">                    cellNum = 0;</span>
+                }
+            }
+<span class="nc" id="L225">            workbook.write(outputStream);</span>
+
+<span class="nc" id="L227">        } catch (IOException e) {</span>
+<span class="nc" id="L228">            throw new CustomException(&quot;Error creating xls file &quot; + e);</span>
+<span class="nc" id="L229">        }</span>
+<span class="nc" id="L230">        return outputFile;</span>
+    }
+
+    /**
+     * This method is used to create excel file with two sheet with different
+     * format
+     * 
+     * @param data
+     *            First sheet records
+     * @param headers
+     *            Record title of first sheet
+     * @param propertyFileName
+     *            Property file name to get directory location
+     * @param fileName
+     *            Output file name
+     * @param secondSheetData
+     *            Second sheet record data
+     * @param secondSheetRowTitle
+     *            Record title of second sheet
+     * @param secondSheetDataKey
+     *            key name of second sheet data
+     * @param secondSheetDataSubKey
+     *            sub key name of second sheet
+     * @param woorkbookNames
+     *            workbook name of sheet
+     * @return output file
+     * @throws IOException
+     * @throws CustomException
+     */
+    @SuppressWarnings({ &quot;unchecked&quot; })
+    public File createExcel(
+            JSONArray data,
+            Map&lt;String, String&gt; headers,
+            String fileName,
+            JSONArray secondSheetData,
+            List&lt;String&gt; secondSheetRowTitle,
+            Map&lt;String, Object&gt; secondSheetDataKey,
+            List&lt;String&gt; secondSheetDataSubKey,
+            List&lt;String&gt; woorkbookNames) throws IOException, CustomException {
+
+<span class="nc" id="L270">        int rowCount = 0;</span>
+        Row row;
+<span class="nc" id="L272">        int cellNum = 0;</span>
+<span class="nc" id="L273">        File outputFile = fileUtil.createFile(fileName,Constants.XLSX_EXTENTION);</span>
+     
+<span class="nc" id="L275">        try (XSSFWorkbook workbook = new XSSFWorkbook();</span>
+<span class="nc" id="L276">                FileOutputStream outputStream = new FileOutputStream(outputFile)) {</span>
+<span class="nc" id="L277">            XSSFSheet sheet = workbook.createSheet(woorkbookNames.get(0));</span>
+<span class="nc" id="L278">            CellStyle style = workbook.createCellStyle();</span>
+<span class="nc" id="L279">            CellStyle boldStyle = workbook.createCellStyle();</span>
+<span class="nc" id="L280">            Font font = workbook.createFont();</span>
+<span class="nc" id="L281">            font.setBold(true);</span>
+<span class="nc" id="L282">            boldStyle.setFont(font);</span>
+<span class="nc" id="L283">            row = sheet.createRow(rowCount);</span>
+<span class="nc" id="L284">            DataFormat dataformater = workbook.createDataFormat();</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">            if (data != null) {</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">                if (data.length() &lt;= 0) {</span>
+<span class="nc" id="L287">                    Cell cell = row.createCell(cellNum);</span>
+<span class="nc" id="L288">                    cell.setCellStyle(boldStyle);</span>
+<span class="nc" id="L289">                    cell.setCellValue(&quot;No records found&quot;);</span>
+<span class="nc" id="L290">                } else {</span>
+
+<span class="nc bnc" id="L292" title="All 2 branches missed.">                    for (String header : headers.values()) {</span>
+<span class="nc" id="L293">                        Cell cell = row.createCell(cellNum);</span>
+<span class="nc" id="L294">                        cell.setCellStyle(boldStyle);</span>
+<span class="nc" id="L295">                        sheet.autoSizeColumn(cellNum);</span>
+<span class="nc" id="L296">                        cell.setCellValue(header);</span>
+<span class="nc" id="L297">                        cellNum++;</span>
+<span class="nc" id="L298">                    }</span>
+<span class="nc bnc" id="L299" title="All 2 branches missed.">                    for (int i = 0; i &lt; data.length(); i++) {</span>
+<span class="nc" id="L300">                        rowCount++;</span>
+<span class="nc" id="L301">                        row = sheet.createRow(rowCount);</span>
+<span class="nc" id="L302">                        JSONObject column = data.getJSONObject(i);</span>
+<span class="nc" id="L303">                        cellNum = 0;</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">                        for (String header : headers.keySet()) {</span>
+<span class="nc" id="L305">                            Cell cell = row.createCell(cellNum);</span>
+
+<span class="nc bnc" id="L307" title="All 2 branches missed.">                            if (column.get(header) instanceof Long) {</span>
+<span class="nc" id="L308">                                cell.setCellValue(column.getLong(header));</span>
+<span class="nc" id="L309">                                style.setDataFormat(dataformater.getFormat(&quot;#,##0&quot;));</span>
+<span class="nc" id="L310">                                cell.setCellStyle(style);</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">                            } else if (column.get(header) instanceof Integer) {</span>
+<span class="nc" id="L312">                                cell.setCellValue(column.getInt(header));</span>
+
+<span class="nc bnc" id="L314" title="All 2 branches missed.">                            } else if (column.get(header) instanceof Double) {</span>
+<span class="nc" id="L315">                                cell.setCellValue(column.getDouble(header));</span>
+<span class="nc" id="L316">                                style.setDataFormat(dataformater.getFormat(&quot;#,##0.00&quot;));</span>
+<span class="nc" id="L317">                                cell.setCellStyle(style);</span>
+                            } else {
+<span class="nc" id="L319">                                cell.setCellValue(column.getString(header));</span>
+                            }
+<span class="nc" id="L321">                            sheet.autoSizeColumn(cellNum);</span>
+<span class="nc" id="L322">                            cellNum++;</span>
+<span class="nc" id="L323">                        }</span>
+                    }
+                }
+            }
+<span class="nc" id="L327">            rowCount = 0;</span>
+<span class="nc" id="L328">            cellNum = 0;</span>
+<span class="nc" id="L329">            XSSFSheet secondSheet = workbook.createSheet(woorkbookNames.get(1));</span>
+<span class="nc" id="L330">            CellStyle cellStyle = workbook.createCellStyle();</span>
+<span class="nc" id="L331">            secondSheet.setColumnWidth(0, 6000);</span>
+<span class="nc" id="L332">            secondSheet.setColumnWidth(1, 4000);</span>
+<span class="nc" id="L333">            secondSheet.setColumnWidth(2, 2000);</span>
+<span class="nc" id="L334">            secondSheet.setColumnWidth(3, 5000);</span>
+<span class="nc" id="L335">            row = secondSheet.createRow(rowCount);</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">            for (String gltitle : secondSheetRowTitle) {</span>
+<span class="nc" id="L337">                Cell cell = row.createCell(cellNum + 1);</span>
+<span class="nc" id="L338">                cell.setCellStyle(style);</span>
+<span class="nc" id="L339">                cell.setCellValue(gltitle);</span>
+<span class="nc" id="L340">                cellNum++;</span>
+
+<span class="nc" id="L342">            }</span>
+<span class="nc" id="L343">            cellNum = 0;</span>
+<span class="nc" id="L344">            Object[] keys = secondSheetDataKey.keySet().toArray();</span>
+<span class="nc" id="L345">            Map&lt;String, String&gt; subTitle = (Map&lt;String, String&gt;) secondSheetDataKey.get(keys[0]);</span>
+
+<span class="nc bnc" id="L347" title="All 2 branches missed.">            for (int i = 0; i &lt; secondSheetData.length(); i++) {</span>
+
+<span class="nc" id="L349">                JSONObject column = secondSheetData.getJSONObject(i);</span>
+<span class="nc" id="L350">                rowCount = rowCount + 1;</span>
+<span class="nc" id="L351">                row = secondSheet.createRow(rowCount);</span>
+<span class="nc" id="L352">                cellNum = 0;</span>
+<span class="nc" id="L353">                Cell cell = row.createCell(cellNum);</span>
+<span class="nc" id="L354">                cell.setCellValue(subTitle.get(column.getString((String) keys[0])));</span>
+<span class="nc" id="L355">                JSONArray record = column.getJSONArray((String) keys[1]);</span>
+<span class="nc" id="L356">                cellNum = 0;</span>
+<span class="nc bnc" id="L357" title="All 2 branches missed.">                for (int j = 0; j &lt; record.length(); j++) {</span>
+<span class="nc" id="L358">                    JSONObject rowData = record.getJSONObject(j);</span>
+<span class="nc" id="L359">                    rowCount = rowCount + 1;</span>
+<span class="nc" id="L360">                    row = secondSheet.createRow(rowCount);</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">                    for (String glDetail : secondSheetDataSubKey) {</span>
+<span class="nc" id="L362">                        cell = row.createCell(cellNum);</span>
+<span class="nc" id="L363">                        cellNum++;</span>
+<span class="nc bnc" id="L364" title="All 2 branches missed.">                        if (rowData.get(glDetail) instanceof String) {</span>
+<span class="nc" id="L365">                            cell.setCellValue(rowData.getString(glDetail));</span>
+<span class="nc bnc" id="L366" title="All 4 branches missed.">                            if (cellNum == 1 || cellNum == 2) {</span>
+<span class="nc" id="L367">                                cellStyle.setAlignment(HorizontalAlignment.RIGHT);</span>
+<span class="nc" id="L368">                                cell.setCellStyle(cellStyle);</span>
+<span class="nc bnc" id="L369" title="All 2 branches missed.">                            } else if (cellNum == 3) {</span>
+<span class="nc" id="L370">                                CellStyle centerAlign = workbook.createCellStyle();</span>
+<span class="nc" id="L371">                                centerAlign.setAlignment(HorizontalAlignment.CENTER);</span>
+<span class="nc" id="L372">                                cell.setCellStyle(centerAlign);</span>
+<span class="nc" id="L373">                            }</span>
+                        } else {
+<span class="nc" id="L375">                            cell.setCellValue(rowData.getDouble(glDetail));</span>
+<span class="nc" id="L376">                            style.setDataFormat(dataformater.getFormat(&quot;#,##0.00&quot;));</span>
+<span class="nc" id="L377">                            cell.setCellStyle(style);</span>
+                        }
+<span class="nc" id="L379">                    }</span>
+<span class="nc" id="L380">                    cellNum = 0;</span>
+                }
+<span class="nc" id="L382">                rowCount = rowCount + 1;</span>
+<span class="nc" id="L383">                row = secondSheet.createRow(rowCount);</span>
+<span class="nc" id="L384">                cellNum = 0;</span>
+<span class="nc" id="L385">                cell = row.createCell(cellNum);</span>
+<span class="nc" id="L386">                cell.setCellValue((String) secondSheetDataKey.get(keys[2]));</span>
+<span class="nc" id="L387">                cellStyle.setAlignment(HorizontalAlignment.RIGHT);</span>
+<span class="nc" id="L388">                cell.setCellStyle(cellStyle);</span>
+<span class="nc" id="L389">                cell = row.createCell(cellNum + 3);</span>
+<span class="nc" id="L390">                cell.setCellValue(column.getDouble((String) keys[2]));</span>
+<span class="nc" id="L391">                style.setDataFormat(dataformater.getFormat(&quot;#,##0.00&quot;));</span>
+<span class="nc" id="L392">                cell.setCellStyle(style);</span>
+            }
+
+<span class="nc" id="L395">            workbook.write(outputStream);</span>
+<span class="nc" id="L396">        } catch (IOException e) {</span>
+<span class="nc" id="L397">            throw new CustomException(&quot;Error creating xls file &quot; + e);</span>
+<span class="nc" id="L398">        }</span>
+<span class="nc" id="L399">        return outputFile;</span>
+    }
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

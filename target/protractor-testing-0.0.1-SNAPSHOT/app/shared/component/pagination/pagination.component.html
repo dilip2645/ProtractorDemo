@@ -1,0 +1,64 @@
+<div class="row mt-2">
+    <div class="col-12 clearfix">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 float-left">
+                Showing {{getFirstItemIndex() + 1}} to {{getLastItemIndex() + 1}} of {{pageData.totalItems}} entries
+            </div>
+            <nav class="col-sm-12 col-md-6 float-right" aria-label="Pagination">
+                <ul class="pagination justify-content-end mb-0">
+                    <li class="page-item" [ngClass]="{disabled: pageData.currentPage === 0}">
+                        <a
+                            class="page-link"
+                            (click)="pageChange(0)"
+                            [attr.tabindex]="pageData.currentPage === 0 ? -1 : 0"
+                        >
+                            First
+                        </a>
+                    </li>
+                    <li class="page-item" [ngClass]="{disabled: pageData.currentPage === 0}">
+                        <a
+                            class="page-link"
+                            (click)="pageChange(pageData.currentPage - 1)"
+                            [attr.tabindex]="pageData.currentPage === 0 ? -1 : 0"
+                        >
+                            Previous
+                        </a>
+                    </li>
+                    <li
+                        *ngFor="let pageNum of pagesRange()"
+                        class="page-item"
+                        [ngClass]="{active: pageNum === pageData.currentPage}"
+                    >
+                        <a class="page-link" (click)="pageChange(pageNum)" tabindex="0">
+                            {{pageNum + 1}}
+                        </a>
+                    </li>
+                    <li
+                        class="page-item"
+                        [ngClass]="{disabled: pageData.currentPage === pageData.totalPages}"
+                    >
+                        <a
+                            class="page-link"
+                            (click)="pageChange(pageData.currentPage + 1)"
+                            [attr.tabindex]="pageData.currentPage == pageData.totalPages ? -1 : 0"
+                        >
+                            Next
+                        </a>
+                    </li>
+                    <li
+                        class="page-item"
+                        [ngClass]="{disabled: pageData.currentPage === pageData.totalPages}"
+                    >
+                        <a
+                            class="page-link"
+                            (click)="pageChange(pageData.totalPages)"
+                            [attr.tabindex]="pageData.currentPage == pageData.totalPages ? -1 : 0"
+                        >
+                            Last
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

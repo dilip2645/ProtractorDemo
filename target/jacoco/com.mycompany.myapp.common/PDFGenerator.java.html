@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PDFGenerator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Protractor Testing</a> &gt; <a href="index.source.html" class="el_package">com.mycompany.myapp.common</a> &gt; <span class="el_source">PDFGenerator.java</span></div><h1>PDFGenerator.java</h1><pre class="source lang-java linenums">package com.mycompany.myapp.common;
+
+/** This class defines method to generate Pdf file**/
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.net.URISyntaxException;
+import java.util.List;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
+import org.apache.fop.apps.FOPException;
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.MimeConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
+
+
+@Component
+public class PDFGenerator {
+
+    private FileUtility fileUtil;
+
+    @Autowired
+    public PDFGenerator(FileUtility fileUtil) {
+<span class="nc" id="L37">        super();</span>
+<span class="nc" id="L38">        this.fileUtil = fileUtil;</span>
+<span class="nc" id="L39">    }</span>
+
+    /**
+     * This method generates PDF report file
+     * 
+     * @param data
+     *            Report data
+     * @param reportTitle
+     * @param xslFile
+     *            XSL file
+     * @param logo
+     *            Application Logo
+     * @param propertyFileName
+     *            property file name
+     * @param fileName
+     * @param signerName
+     * @param userName
+     * @return file returns generated PDF file
+     * 
+     * @throws URISyntaxException
+     * @throws IOException
+     * @throws FOPException
+     * @throws TransformerException
+     * @throws CustomException
+     * @throws FileNotFoundException
+     * 
+     */
+
+    public File createPDF(
+            String data,
+            File xslFile,
+            String logo,
+            String userName,
+            DigitalSignatureBean signatureBean) throws CustomException, IOException {
+        String inputXML;
+<span class="nc" id="L74">        File outputFile = fileUtil</span>
+<span class="nc" id="L75">                .createFile(signatureBean.getFileName(), Constants.PDF_EXTENTION);</span>
+<span class="nc" id="L76">        try (OutputStream out = new FileOutputStream(outputFile)) {</span>
+<span class="nc" id="L77">            inputXML = CreateXML.setJsonToXml(</span>
+                    data,
+<span class="nc" id="L79">                    signatureBean.getReportTitle(),</span>
+                    logo,
+<span class="nc" id="L81">                    signatureBean.getSignerName(),</span>
+                    userName,
+<span class="nc" id="L83">                    signatureBean.getUserSignature());</span>
+<span class="nc" id="L84">            StringReader reader = new StringReader(inputXML);</span>
+<span class="nc" id="L85">            FopFactory fopFactory = FopFactory.newInstance(new File(&quot;.&quot;).toURI());</span>
+<span class="nc" id="L86">            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();</span>
+<span class="nc" id="L87">            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);</span>
+<span class="nc" id="L88">            TransformerFactory factory = TransformerFactory.newInstance();</span>
+<span class="nc" id="L89">            Transformer transformer = factory.newTransformer(new StreamSource(xslFile));</span>
+<span class="nc" id="L90">            Result res = new SAXResult(fop.getDefaultHandler());</span>
+<span class="nc" id="L91">            transformer.transform(new StreamSource(reader), res);</span>
+<span class="nc" id="L92">            return outputFile;</span>
+<span class="nc" id="L93">        } catch (IOException | FOPException | TransformerException e) {</span>
+<span class="nc" id="L94">            throw new CustomException(&quot;Error in PDF creation: &quot; + e);</span>
+        }
+    }
+
+    /**
+     * This method generates PDF report file for listing reports
+     * 
+     * @param data
+     *            Report data object This data object will be converted into
+     *            ordered set of xml data using XmlMapper
+     * @param xslFile
+     *            XSL file as stream
+     * @param logo
+     *            Application Logo
+     * @param fileName
+     * @param signerName
+     * @param userName
+     * @return file returns generated PDF file
+     * @throws CustomException
+     * @throws IOException
+     **/
+    public File createPDF(
+            List&lt;?&gt; data,
+            InputStream xslFile,
+            String logo,
+            String userName,
+            DigitalSignatureBean signatureBean,
+            List&lt;String&gt; headers,
+            List&lt;String&gt; excludeFields) throws CustomException, IOException {
+        String inputXML;
+        ReportData reportData;
+        Transformer transformer;
+<span class="nc" id="L126">        File outputFile = fileUtil.createFile(signatureBean.getFileName(), Constants.PDF_EXTENTION);</span>
+<span class="nc" id="L127">        try (OutputStream out = new FileOutputStream(outputFile)) {</span>
+
+<span class="nc" id="L129">            reportData = new ReportData();</span>
+<span class="nc" id="L130">            reportData.setSignerName(signatureBean.getSignerName());</span>
+<span class="nc" id="L131">            reportData.setReportTitle(signatureBean.getReportTitle());</span>
+<span class="nc" id="L132">            reportData.setLogo(&quot;file:///&quot; + logo.replace(&quot;\\&quot;, &quot;/&quot;));</span>
+<span class="nc" id="L133">            reportData.setData(data);</span>
+<span class="nc" id="L134">            reportData.setUserName(userName);</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">            if (signatureBean.getUserSignature() != null) {</span>
+<span class="nc" id="L136">                reportData.setUserSignature(signatureBean.getUserSignature());</span>
+            }
+<span class="nc" id="L138">            reportData.setHeaders(headers);</span>
+<span class="nc" id="L139">            reportData.setExcludeFields(excludeFields);</span>
+<span class="nc" id="L140">            inputXML = CreateXML.objectToXml(reportData);</span>
+<span class="nc" id="L141">            StringReader reader = new StringReader(inputXML);</span>
+<span class="nc" id="L142">            FopFactory fopFactory = FopFactory.newInstance(new File(&quot;.&quot;).toURI());</span>
+<span class="nc" id="L143">            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();</span>
+<span class="nc" id="L144">            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);</span>
+<span class="nc" id="L145">            TransformerFactory factory = TransformerFactory.newInstance();</span>
+
+<span class="nc bnc" id="L147" title="All 2 branches missed.">            if (xslFile != null) {</span>
+<span class="nc" id="L148">                transformer = factory.newTransformer(new StreamSource(xslFile));</span>
+            } else {
+<span class="nc" id="L150">                transformer = factory.newTransformer(</span>
+<span class="nc" id="L151">                        new StreamSource(new ClassPathResource(&quot;default-report.xsl&quot;).getInputStream()));</span>
+            }
+<span class="nc" id="L153">            Result res = new SAXResult(fop.getDefaultHandler());</span>
+<span class="nc" id="L154">            transformer.transform(new StreamSource(reader), res);</span>
+<span class="nc" id="L155">            return outputFile;</span>
+<span class="nc" id="L156">        } catch (IOException | FOPException | TransformerException e) {</span>
+<span class="nc" id="L157">            throw new CustomException(&quot;Error in PDF creation: &quot; + e);</span>
+        }
+    }
+    /**
+     * This method generates PDF report file for listing reports
+     * 
+     * @param data
+     *            Report data object This data object will be converted into
+     *            ordered set of xml data using XmlMapper
+     * @param xslFile
+     *            XSL file
+     * @param logo
+     *            Application Logo
+     * @param fileName
+     * @param signerName
+     * @param userName
+     * @return file returns generated PDF file
+     * @throws CustomException
+     * @throws IOException
+     **/
+    public File createPDF(
+            List&lt;?&gt; data,
+            File xslFile,
+            String logo,
+            String userName,
+            DigitalSignatureBean signatureBean,
+            List&lt;String&gt; headers,
+            List&lt;String&gt; excludeFields) throws CustomException, IOException {
+        String inputXML;
+        ReportData reportData;
+        Transformer transformer;
+<span class="nc" id="L188">        File outputFile = fileUtil.createFile(signatureBean.getFileName(), Constants.PDF_EXTENTION);</span>
+<span class="nc" id="L189">        try (OutputStream out = new FileOutputStream(outputFile)) {</span>
+
+<span class="nc" id="L191">            reportData = new ReportData();</span>
+<span class="nc" id="L192">            reportData.setSignerName(signatureBean.getSignerName());</span>
+<span class="nc" id="L193">            reportData.setReportTitle(signatureBean.getReportTitle());</span>
+<span class="nc" id="L194">            reportData.setLogo(&quot;file:///&quot; + logo.replace(&quot;\\&quot;, &quot;/&quot;));</span>
+<span class="nc" id="L195">            reportData.setData(data);</span>
+<span class="nc" id="L196">            reportData.setUserName(userName);</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">            if (signatureBean.getUserSignature() != null) {</span>
+<span class="nc" id="L198">                reportData.setUserSignature(signatureBean.getUserSignature());</span>
+            }
+<span class="nc" id="L200">            reportData.setHeaders(headers);</span>
+<span class="nc" id="L201">            reportData.setExcludeFields(excludeFields);</span>
+<span class="nc" id="L202">            inputXML = CreateXML.objectToXml(reportData);</span>
+<span class="nc" id="L203">            StringReader reader = new StringReader(inputXML);</span>
+<span class="nc" id="L204">            FopFactory fopFactory = FopFactory.newInstance(new File(&quot;.&quot;).toURI());</span>
+<span class="nc" id="L205">            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();</span>
+<span class="nc" id="L206">            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);</span>
+<span class="nc" id="L207">            TransformerFactory factory = TransformerFactory.newInstance();</span>
+
+<span class="nc bnc" id="L209" title="All 4 branches missed.">            if (xslFile != null &amp;&amp; xslFile.exists()) {</span>
+<span class="nc" id="L210">                transformer = factory.newTransformer(new StreamSource(xslFile));</span>
+            } else {
+<span class="nc" id="L212">                transformer = factory.newTransformer(</span>
+<span class="nc" id="L213">                        new StreamSource(new ClassPathResource(&quot;default-report.xsl&quot;).getInputStream()));</span>
+         }
+<span class="nc" id="L215">            Result res = new SAXResult(fop.getDefaultHandler());</span>
+<span class="nc" id="L216">            transformer.transform(new StreamSource(reader), res);</span>
+<span class="nc" id="L217">            return outputFile;</span>
+<span class="nc" id="L218">        } catch (IOException | FOPException | TransformerException e) {</span>
+<span class="nc" id="L219">            throw new CustomException(&quot;Error in PDF creation: &quot; + e);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

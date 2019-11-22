@@ -1,0 +1,7 @@
+<form class="form-inline" [formGroup]="pageSizeSelectionForm">
+    Show
+    <select [compareWith]="compareFn" class="form-control form-control-sm mx-2" formControlName="pageSizeSelector">
+        <option *ngFor="let pageSize of availablePageSizes" [ngValue]="pageSize">{{pageSize}}</option>
+    </select>
+    entries
+</form>

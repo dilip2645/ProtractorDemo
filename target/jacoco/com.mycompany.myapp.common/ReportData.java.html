@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReportData.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Protractor Testing</a> &gt; <a href="index.source.html" class="el_package">com.mycompany.myapp.common</a> &gt; <span class="el_source">ReportData.java</span></div><h1>ReportData.java</h1><pre class="source lang-java linenums">package com.mycompany.myapp.common;
+
+
+import java.io.Serializable;
+import java.util.List;
+
+<span class="nc" id="L7">public class ReportData implements Serializable {</span>
+
+	private static final long serialVersionUID = 2841927473422237002L;
+
+	/**
+	 * This field is used to print signers name below the signature in PDF
+	 * report that provides feature of auto-sign
+	 **/
+	private String signerName;
+
+	/**
+	 * This field is used to show title of Report
+	 **/
+	private String reportTitle;
+
+	/**
+	 * This field is used to show the FHLBNY logo on PDF report
+	 **/
+	private String logo;
+
+	/**
+	 * This field is used to exclude any column from PDF report
+	 **/
+	private List&lt;String&gt; excludeFields;
+
+	/**
+	 * This field contains the list of headers of PDF headers
+	 **/
+	private List&lt;String&gt; headers;
+
+	/**
+	 * This field contains list of Records of any type of class or datatype to
+	 * show data on PDF report
+	 **/
+	private List&lt;?&gt; data;
+
+	/**
+	 * This field is used to show username on pdf report
+	 **/
+	private String userName;
+
+	/**
+	 * This field is used to add signature in PDF report that provides feature
+	 * of auto-sign. This is Base64String of user signature.
+	 **/
+	private String userSignature;
+
+	public String getSignerName() {
+<span class="nc" id="L55">		return signerName;</span>
+	}
+
+	public void setSignerName(String signerName) {
+<span class="nc" id="L59">		this.signerName = signerName;</span>
+<span class="nc" id="L60">	}</span>
+
+	public String getReportTitle() {
+<span class="nc" id="L63">		return reportTitle;</span>
+	}
+
+	public void setReportTitle(String reportTitle) {
+<span class="nc" id="L67">		this.reportTitle = reportTitle;</span>
+<span class="nc" id="L68">	}</span>
+
+	public String getLogo() {
+<span class="nc" id="L71">		return logo;</span>
+	}
+
+	public void setLogo(String logo) {
+<span class="nc" id="L75">		this.logo = logo;</span>
+<span class="nc" id="L76">	}</span>
+
+	public List&lt;String&gt; getExcludeFields() {
+<span class="nc" id="L79">		return excludeFields;</span>
+	}
+
+	public void setExcludeFields(List&lt;String&gt; excludeFields) {
+<span class="nc" id="L83">		this.excludeFields = excludeFields;</span>
+<span class="nc" id="L84">	}</span>
+
+	public List&lt;String&gt; getHeaders() {
+<span class="nc" id="L87">		return headers;</span>
+	}
+
+	public void setHeaders(List&lt;String&gt; headers) {
+<span class="nc" id="L91">		this.headers = headers;</span>
+<span class="nc" id="L92">	}</span>
+
+	public List&lt;?&gt; getData() {
+<span class="nc" id="L95">		return data;</span>
+	}
+
+	public void setData(List&lt;?&gt; data) {
+<span class="nc" id="L99">		this.data = data;</span>
+<span class="nc" id="L100">	}</span>
+
+	public String getUserName() {
+<span class="nc" id="L103">		return userName;</span>
+	}
+
+	public void setUserName(String userName) {
+<span class="nc" id="L107">		this.userName = userName;</span>
+<span class="nc" id="L108">	}</span>
+
+	public String getUserSignature() {
+<span class="nc" id="L111">		return userSignature;</span>
+	}
+
+	public void setUserSignature(String userSignature) {
+<span class="nc" id="L115">		this.userSignature = userSignature;</span>
+<span class="nc" id="L116">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

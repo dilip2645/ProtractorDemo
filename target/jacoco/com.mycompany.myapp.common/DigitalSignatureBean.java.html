@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DigitalSignatureBean.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Protractor Testing</a> &gt; <a href="index.source.html" class="el_package">com.mycompany.myapp.common</a> &gt; <span class="el_source">DigitalSignatureBean.java</span></div><h1>DigitalSignatureBean.java</h1><pre class="source lang-java linenums">package com.mycompany.myapp.common;
+
+
+import java.io.Serializable;
+
+public class DigitalSignatureBean implements Serializable {
+
+    private static final long serialVersionUID = 1237525602076028401L;
+
+    private String fileName;
+    private String reportTitle;
+    private int xCoordinate;
+    private int yCoordinate;
+    private int zoomPercentage;
+    private int pageNo;
+    private String signerName;
+    private String userSignature;
+
+<span class="nc" id="L19">    public DigitalSignatureBean() {</span>
+        /* Default constructor */
+<span class="nc" id="L21">    }</span>
+
+   /**
+     * @return
+     */
+    public String getFileName() {
+<span class="nc" id="L27">        return fileName;</span>
+    }
+
+    /**
+     * @param fileName
+     */
+    public void setFileName(String fileName) {
+<span class="nc" id="L34">        this.fileName = fileName;</span>
+<span class="nc" id="L35">    }</span>
+
+    /**
+     * @return
+     */
+    public String getReportTitle() {
+<span class="nc" id="L41">        return reportTitle;</span>
+    }
+
+    /**
+     * @param reportTitle
+     */
+    public void setReportTitle(String reportTitle) {
+<span class="nc" id="L48">        this.reportTitle = reportTitle;</span>
+<span class="nc" id="L49">    }</span>
+
+    /**
+     * @return
+     */
+    public int getxCoordinate() {
+<span class="nc" id="L55">        return xCoordinate;</span>
+    }
+
+    /**
+     * @param xCoordinate
+     */
+    public void setxCoordinate(int xCoordinate) {
+<span class="nc" id="L62">        this.xCoordinate = xCoordinate;</span>
+<span class="nc" id="L63">    }</span>
+
+    /**
+     * @return
+     */
+    public int getyCoordinate() {
+<span class="nc" id="L69">        return yCoordinate;</span>
+    }
+
+    /**
+     * @param yCoordinate
+     */
+    public void setyCoordinate(int yCoordinate) {
+<span class="nc" id="L76">        this.yCoordinate = yCoordinate;</span>
+<span class="nc" id="L77">    }</span>
+
+    /**
+     * @return
+     */
+    public int getZoomPercentage() {
+<span class="nc" id="L83">        return zoomPercentage;</span>
+    }
+
+    /**
+     * @param zoomPercentage
+     */
+    public void setZoomPercentage(int zoomPercentage) {
+<span class="nc" id="L90">        this.zoomPercentage = zoomPercentage;</span>
+<span class="nc" id="L91">    }</span>
+
+    /**
+     * @return
+     */
+    public int getPageNo() {
+<span class="nc" id="L97">        return pageNo;</span>
+    }
+
+    /**
+     * @param pageNo
+     */
+    public void setPageNo(int pageNo) {
+<span class="nc" id="L104">        this.pageNo = pageNo;</span>
+<span class="nc" id="L105">    }</span>
+
+    /**
+     * @return
+     */
+    public String getSignerName() {
+<span class="nc" id="L111">        return signerName;</span>
+    }
+
+    /**
+     * @param signerName
+     */
+    public void setSignerName(String signerName) {
+<span class="nc" id="L118">        this.signerName = signerName;</span>
+<span class="nc" id="L119">    }</span>
+
+    /**
+     * @return
+     */
+    public String getUserSignature() {
+<span class="nc" id="L125">        return userSignature;</span>
+    }
+
+    /**
+     * @param userSignature
+     */
+    public void setUserSignature(String userSignature) {
+<span class="nc" id="L132">        this.userSignature = userSignature;</span>
+<span class="nc" id="L133">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

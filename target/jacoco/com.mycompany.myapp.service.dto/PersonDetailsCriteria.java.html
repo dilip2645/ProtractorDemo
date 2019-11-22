@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersonDetailsCriteria.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Protractor Testing</a> &gt; <a href="index.source.html" class="el_package">com.mycompany.myapp.service.dto</a> &gt; <span class="el_source">PersonDetailsCriteria.java</span></div><h1>PersonDetailsCriteria.java</h1><pre class="source lang-java linenums">package com.mycompany.myapp.service.dto;
+
+import java.io.Serializable;
+import java.util.Objects;
+import io.github.jhipster.service.Criteria;
+import io.github.jhipster.service.filter.BooleanFilter;
+import io.github.jhipster.service.filter.DoubleFilter;
+import io.github.jhipster.service.filter.Filter;
+import io.github.jhipster.service.filter.FloatFilter;
+import io.github.jhipster.service.filter.IntegerFilter;
+import io.github.jhipster.service.filter.LongFilter;
+import io.github.jhipster.service.filter.StringFilter;
+
+/**
+ * Criteria class for the {@link com.mycompany.myapp.domain.PersonDetails} entity. This class is used
+ * in {@link com.mycompany.myapp.web.rest.PersonDetailsResource} to receive all the possible filtering options from
+ * the Http GET request parameters.
+ * For example the following could be a valid request:
+ * {@code /person-details?id.greaterThan=5&amp;attr1.contains=something&amp;attr2.specified=false}
+ * As Spring is unable to properly convert the types, unless specific {@link Filter} class are used, we need to use
+ * fix type specific filters.
+ */
+public class PersonDetailsCriteria implements Serializable, Criteria {
+
+    private static final long serialVersionUID = 1L;
+
+    private LongFilter id;
+
+    private StringFilter personName;
+
+    private IntegerFilter personId;
+
+    private StringFilter personAddress;
+
+<span class="nc" id="L35">    public PersonDetailsCriteria(){</span>
+<span class="nc" id="L36">    }</span>
+
+<span class="nc" id="L38">    public PersonDetailsCriteria(PersonDetailsCriteria other){</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        this.id = other.id == null ? null : other.id.copy();</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        this.personName = other.personName == null ? null : other.personName.copy();</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        this.personId = other.personId == null ? null : other.personId.copy();</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        this.personAddress = other.personAddress == null ? null : other.personAddress.copy();</span>
+<span class="nc" id="L43">    }</span>
+
+    @Override
+    public PersonDetailsCriteria copy() {
+<span class="nc" id="L47">        return new PersonDetailsCriteria(this);</span>
+    }
+
+    public LongFilter getId() {
+<span class="nc" id="L51">        return id;</span>
+    }
+
+    public void setId(LongFilter id) {
+<span class="nc" id="L55">        this.id = id;</span>
+<span class="nc" id="L56">    }</span>
+
+    public StringFilter getPersonName() {
+<span class="nc" id="L59">        return personName;</span>
+    }
+
+    public void setPersonName(StringFilter personName) {
+<span class="nc" id="L63">        this.personName = personName;</span>
+<span class="nc" id="L64">    }</span>
+
+    public IntegerFilter getPersonId() {
+<span class="nc" id="L67">        return personId;</span>
+    }
+
+    public void setPersonId(IntegerFilter personId) {
+<span class="nc" id="L71">        this.personId = personId;</span>
+<span class="nc" id="L72">    }</span>
+
+    public StringFilter getPersonAddress() {
+<span class="nc" id="L75">        return personAddress;</span>
+    }
+
+    public void setPersonAddress(StringFilter personAddress) {
+<span class="nc" id="L79">        this.personAddress = personAddress;</span>
+<span class="nc" id="L80">    }</span>
+
+
+    @Override
+    public boolean equals(Object o) {
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        if (this == o) {</span>
+<span class="nc" id="L86">            return true;</span>
+        }
+<span class="nc bnc" id="L88" title="All 4 branches missed.">        if (o == null || getClass() != o.getClass()) {</span>
+<span class="nc" id="L89">            return false;</span>
+        }
+<span class="nc" id="L91">        final PersonDetailsCriteria that = (PersonDetailsCriteria) o;</span>
+<span class="nc" id="L92">        return</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            Objects.equals(id, that.id) &amp;&amp;</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            Objects.equals(personName, that.personName) &amp;&amp;</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            Objects.equals(personId, that.personId) &amp;&amp;</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">            Objects.equals(personAddress, that.personAddress);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L101">        return Objects.hash(</span>
+        id,
+        personName,
+        personId,
+        personAddress
+        );
+    }
+
+    @Override
+    public String toString() {
+<span class="nc bnc" id="L111" title="All 8 branches missed.">        return &quot;PersonDetailsCriteria{&quot; +</span>
+                (id != null ? &quot;id=&quot; + id + &quot;, &quot; : &quot;&quot;) +
+                (personName != null ? &quot;personName=&quot; + personName + &quot;, &quot; : &quot;&quot;) +
+                (personId != null ? &quot;personId=&quot; + personId + &quot;, &quot; : &quot;&quot;) +
+                (personAddress != null ? &quot;personAddress=&quot; + personAddress + &quot;, &quot; : &quot;&quot;) +
+            &quot;}&quot;;
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreateXML.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Protractor Testing</a> &gt; <a href="index.source.html" class="el_package">com.mycompany.myapp.common</a> &gt; <span class="el_source">CreateXML.java</span></div><h1>CreateXML.java</h1><pre class="source lang-java linenums">package com.mycompany.myapp.common;
+
+
+/**This class is used to create XML input for FOP PDF generator**/
+
+import org.json.JSONObject;
+import org.json.XML;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+public class CreateXML {
+
+<span class="nc" id="L14">    CreateXML() {</span>
+        /** private constructor **/
+<span class="nc" id="L16">    }</span>
+
+    /**
+     * This method create XML
+     * 
+     * @param data
+     *            string of Report data
+     * @param logo
+     *            application LOGO
+     * @param name
+     *            Signer Name
+     * @param userName
+     *            Logged User Name
+     * @return XML Returns data in XML format
+     * 
+     */
+    public static String setJsonToXml(
+            String data,
+            String title,
+            String logo,
+            String name,
+            String userName,
+            String userSignature) {
+<span class="nc" id="L39">        JSONObject input = new JSONObject();</span>
+<span class="nc" id="L40">        JSONObject report = new JSONObject();</span>
+        String xml;
+
+<span class="nc" id="L43">        report.put(&quot;signerName&quot;, name);</span>
+<span class="nc" id="L44">        report.put(&quot;reportTitle&quot;, title);</span>
+<span class="nc" id="L45">        report.put(&quot;logo&quot;, &quot;file:///&quot; + logo.replace(&quot;\\&quot;, &quot;/&quot;));</span>
+<span class="nc" id="L46">        report.put(&quot;data&quot;, new JSONObject(data));</span>
+<span class="nc" id="L47">        report.put(&quot;userName&quot;, userName);</span>
+
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        if (userSignature != null) {</span>
+<span class="nc" id="L50">            report.put(&quot;userSignature&quot;, &quot;file:///&quot; + userSignature.replace(&quot;\\&quot;, &quot;/&quot;));</span>
+        }
+<span class="nc" id="L52">        input.put(&quot;report&quot;, report);</span>
+<span class="nc" id="L53">        xml = XML.toString(input);</span>
+<span class="nc" id="L54">        return xml;</span>
+
+    }
+
+    /**
+     * Method converts object into Xml string
+     * 
+     * @param reportData
+     * @return String of xml
+     * @throws JsonProcessingException
+     **/
+    public static String objectToXml(ReportData reportData) throws JsonProcessingException {
+<span class="nc" id="L66">        return new XmlMapper().writeValueAsString(reportData);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

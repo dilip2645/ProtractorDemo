@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersonDetailsResource.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Protractor Testing</a> &gt; <a href="index.source.html" class="el_package">com.mycompany.myapp.web.rest</a> &gt; <span class="el_source">PersonDetailsResource.java</span></div><h1>PersonDetailsResource.java</h1><pre class="source lang-java linenums">package com.mycompany.myapp.web.rest;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import com.mycompany.myapp.common.ReportGenerator;
+import com.mycompany.myapp.common.FileOperation;
+import com.mycompany.myapp.common.ReportFileType;
+import org.springframework.core.io.InputStreamResource;
+import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.mycompany.myapp.domain.PersonDetails;
+import com.mycompany.myapp.service.PersonDetailsService;
+import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import com.mycompany.myapp.service.dto.PersonDetailsCriteria;
+import com.mycompany.myapp.service.PersonDetailsQueryService;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
+import io.github.jhipster.web.util.ResponseUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * REST controller for managing {@link com.mycompany.myapp.domain.PersonDetails}.
+ */
+@RestController
+@RequestMapping(&quot;/api&quot;)
+public class PersonDetailsResource {
+
+<span class="nc" id="L55">    private final Logger log = LoggerFactory.getLogger(PersonDetailsResource.class);</span>
+
+    private static final String ENTITY_NAME = &quot;personDetails&quot;;
+
+    @Value(&quot;${jhipster.clientApp.name}&quot;)
+    private String applicationName;
+
+    private final PersonDetailsService personDetailsService;
+
+    private final PersonDetailsQueryService personDetailsQueryService;
+
+    private final ReportGenerator reportGenerator;
+
+<span class="nc" id="L68">    public PersonDetailsResource(PersonDetailsService personDetailsService, PersonDetailsQueryService personDetailsQueryService, ReportGenerator reportGenerator) {</span>
+<span class="nc" id="L69">        this.personDetailsService = personDetailsService;</span>
+<span class="nc" id="L70">        this.personDetailsQueryService = personDetailsQueryService;</span>
+<span class="nc" id="L71">        this.reportGenerator = reportGenerator;</span>
+<span class="nc" id="L72">    }</span>
+
+    /**
+     * {@code POST  /person-details} : Create a new personDetails.
+     *
+     * @param personDetails the personDetails to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new personDetails, or with status {@code 400 (Bad Request)} if the personDetails has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PostMapping(&quot;/person-details&quot;)
+    public ResponseEntity&lt;PersonDetails&gt; createPersonDetails(@Valid @RequestBody PersonDetails personDetails) throws URISyntaxException {
+<span class="nc" id="L83">        log.debug(&quot;REST request to save PersonDetails : {}&quot;, personDetails);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (personDetails.getId() != null) {</span>
+<span class="nc" id="L85">            throw new BadRequestAlertException(&quot;A new personDetails cannot already have an ID&quot;, ENTITY_NAME, &quot;idexists&quot;);</span>
+        }
+<span class="nc" id="L87">        PersonDetails result = personDetailsService.save(personDetails);</span>
+<span class="nc" id="L88">        return ResponseEntity.created(new URI(&quot;/api/person-details/&quot; + result.getId()))</span>
+<span class="nc" id="L89">            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))</span>
+<span class="nc" id="L90">            .body(result);</span>
+    }
+
+    /**
+     * {@code PUT  /person-details} : Updates an existing personDetails.
+     *
+     * @param personDetails the personDetails to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated personDetails,
+     * or with status {@code 400 (Bad Request)} if the personDetails is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the personDetails couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping(&quot;/person-details&quot;)
+    public ResponseEntity&lt;PersonDetails&gt; updatePersonDetails(@Valid @RequestBody PersonDetails personDetails) throws URISyntaxException {
+<span class="nc" id="L104">        log.debug(&quot;REST request to update PersonDetails : {}&quot;, personDetails);</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (personDetails.getId() == null) {</span>
+<span class="nc" id="L106">            throw new BadRequestAlertException(&quot;Invalid id&quot;, ENTITY_NAME, &quot;idnull&quot;);</span>
+        }
+<span class="nc" id="L108">        PersonDetails result = personDetailsService.save(personDetails);</span>
+<span class="nc" id="L109">        return ResponseEntity.ok()</span>
+<span class="nc" id="L110">            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, personDetails.getId().toString()))</span>
+<span class="nc" id="L111">            .body(result);</span>
+    }
+
+    /**
+     * {@code GET  /person-details} : get all the personDetails.
+     *
+
+     * @param pageable the pagination information.
+
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of personDetails in body.
+     */
+    @GetMapping(&quot;/person-details&quot;)
+    public ResponseEntity&lt;List&lt;PersonDetails&gt;&gt; getAllPersonDetails(PersonDetailsCriteria criteria, Pageable pageable,@RequestParam(value = &quot;exportType&quot;, required = false) String exportType) {
+<span class="nc" id="L125">        log.debug(&quot;REST request to get PersonDetails by criteria: {}&quot;, criteria);</span>
+<span class="nc bnc" id="L126" title="All 2 branches missed.">        if(exportType==null) {</span>
+        PageRequest pageRequest;
+<span class="nc" id="L128">        Sort.Order order = new Sort.Order(pageable.getSort().iterator().next().getDirection(),pageable.getSort().iterator().next().getProperty()).ignoreCase();</span>
+<span class="nc" id="L129">        pageRequest = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), new Sort(order));</span>
+<span class="nc" id="L130">        Page&lt;PersonDetails&gt; page = personDetailsQueryService.findByCriteria(criteria, pageable);</span>
+<span class="nc" id="L131">        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);</span>
+<span class="nc" id="L132">        return ResponseEntity.ok().headers(headers).body(page.getContent());</span>
+        }
+        else{
+           
+<span class="nc" id="L136">        List&lt;String&gt; excludedHeader = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L137">			excludedHeader.add(&quot;id&quot;);</span>
+<span class="nc" id="L138">			Date date = Calendar.getInstance().getTime();</span>
+<span class="nc" id="L139">			DateFormat dateFormat = new SimpleDateFormat(&quot;hhmmssSSS&quot;);</span>
+<span class="nc" id="L140">			String strDate = dateFormat.format(date);</span>
+<span class="nc" id="L141">			String fileName = &quot;Demo_&quot;+strDate;</span>
+
+<span class="nc" id="L143">			List&lt;PersonDetails&gt; personDetailsList = personDetailsQueryService.findByCriteria(criteria);</span>
+
+<span class="nc" id="L145">			ReportFileType  report = reportGenerator.generateListingReport(</span>
+                personDetailsList,
+					exportType,
+<span class="nc" id="L148">					getPersonDetailsReportHeader(),</span>
+					&quot;PersonDetails&quot;,
+					&quot;PersonDetails&quot;,
+					&quot;PersonDetails Report&quot;,
+					excludedHeader,
+					null);           
+<span class="nc bnc" id="L154" title="All 2 branches missed.">			if(report.getReportFile().exists()){</span>
+				FileOperation inputStream;
+				try {
+<span class="nc" id="L157">					inputStream = new FileOperation(report.getReportFile());</span>
+<span class="nc" id="L158">					return new ResponseEntity(new InputStreamResource(inputStream), report.getHttpHeader(),</span>
+							HttpStatus.OK);
+<span class="nc" id="L160">				} catch (FileNotFoundException e) {</span>
+					// TODO Auto-generated catch block
+<span class="nc" id="L162">					e.printStackTrace();</span>
+				}
+			} 
+        }
+<span class="nc" id="L166">        return null;</span>
+    }
+
+    /**
+    * {@code GET  /person-details/count} : count all the personDetails.
+    *
+    * @param criteria the criteria which the requested entities should match.
+    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+    */
+    @GetMapping(&quot;/person-details/count&quot;)
+    public ResponseEntity&lt;Long&gt; countPersonDetails(PersonDetailsCriteria criteria) {
+<span class="nc" id="L177">        log.debug(&quot;REST request to count PersonDetails by criteria: {}&quot;, criteria);</span>
+<span class="nc" id="L178">        return ResponseEntity.ok().body(personDetailsQueryService.countByCriteria(criteria));</span>
+    }
+
+    /**
+     * {@code GET  /person-details/:id} : get the &quot;id&quot; personDetails.
+     *
+     * @param id the id of the personDetails to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the personDetails, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping(&quot;/person-details/{id}&quot;)
+    public ResponseEntity&lt;PersonDetails&gt; getPersonDetails(@PathVariable Long id) {
+<span class="nc" id="L189">        log.debug(&quot;REST request to get PersonDetails : {}&quot;, id);</span>
+<span class="nc" id="L190">        Optional&lt;PersonDetails&gt; personDetails = personDetailsService.findOne(id);</span>
+<span class="nc" id="L191">        return ResponseUtil.wrapOrNotFound(personDetails);</span>
+    }
+
+    /**
+     * {@code DELETE  /person-details/:id} : delete the &quot;id&quot; personDetails.
+     *
+     * @param id the id of the personDetails to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping(&quot;/person-details/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deletePersonDetails(@PathVariable Long id) {
+<span class="nc" id="L202">        log.debug(&quot;REST request to delete PersonDetails : {}&quot;, id);</span>
+<span class="nc" id="L203">        personDetailsService.delete(id);</span>
+<span class="nc" id="L204">        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();</span>
+    }
+
+    public static Map&lt;String, String&gt; getPersonDetailsReportHeader() {
+<span class="nc" id="L208">        Map&lt;String, String&gt; reportHeaders = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc" id="L209">            reportHeaders.put(&quot;personName&quot;,&quot;PersonName&quot;);</span>
+<span class="nc" id="L210">            reportHeaders.put(&quot;personId&quot;,&quot;PersonId&quot;);</span>
+<span class="nc" id="L211">            reportHeaders.put(&quot;personAddress&quot;,&quot;PersonAddress&quot;);</span>
+<span class="nc" id="L212">        return reportHeaders;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

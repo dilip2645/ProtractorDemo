@@ -1,0 +1,64 @@
+<fhlbny-breadcrumb [breadcrumbData]="breadcrumb"></fhlbny-breadcrumb>
+<form [formGroup]="editForm">
+    <fhlbny-panel id="jhi-course-heading" headerTitle="{{panelTitle}}">
+        <div class="form-group row d-none">
+            <label for="id" class="col-12 col-sm-3 col-form-label text-sm-right">
+              Id
+            </label>
+            <div class="col-12 col-lg-6 col-sm-8">
+              <input type="number" formControlName="id" class="form-control form-control-sm" id="field_id" placeholder="Enter id">
+            </div>
+          </div>
+<div class="form-group row" #courseNameContainer>
+    <label class="col-12 col-sm-3 col-form-label text-sm-right" for="field_courseName">Course Name</label>
+    <div class="col-12 col-lg-6 col-sm-8">
+              <input type="text" class="form-control form-control-sm " formControlName="courseName"  id="field_courseName"
+              placeholder="Enter courseName"/>
+        </div>
+      </div>
+<div class="form-group row" #courseFeeContainer>
+    <label class="col-12 col-sm-3 col-form-label text-sm-right" for="field_courseFee">Course Fee</label>
+    <div class="col-12 col-lg-6 col-sm-8">
+              <input type="number" class="form-control form-control-sm " formControlName="courseFee"  id="field_courseFee"
+              placeholder="Enter courseFee"/>
+        </div>
+      </div>
+<div class="form-group row" #courseDurationContainer>
+    <label class="col-12 col-sm-3 col-form-label text-sm-right" for="field_courseDuration">Course Duration</label>
+    <div class="col-12 col-lg-6 col-sm-8">
+              <input type="number" class="form-control form-control-sm " formControlName="courseDuration"  id="field_courseDuration"
+              placeholder="Enter courseDuration"/>
+        </div>
+      </div>
+    <div class="form-group text-center row mb-0">
+        <div class="col-12 col-sm-3"></div>
+        <div class="col-12 col-lg-6 col-sm-8 text-right">
+          <ng-container>
+            <button *ngIf="formType === 'update'" type="button" id="btn_update" class="btn btn-primary" (click)="save()">
+              <i class="fa fa-save"></i> Update
+            </button>
+          </ng-container>
+          <ng-container>
+            <button *ngIf="formType === 'update'" type="button" id="btn_delete" class="btn btn-primary ml-2" (click)="openDeleteModal(deleteModal)">
+              <i class="fa fa-trash"></i> Delete
+            </button>
+          </ng-container>
+          <button *ngIf="formType === 'add'" type="submit" id="save-entity" class="btn btn-primary" (click)="save()">
+            <i class="fa fa-save"></i> Save
+          </button>
+          <button class="btn btn-dark ml-2" type="button" id="cancel-save" (click)="previousState()">
+            <i class="fa fa-ban"></i> Cancel
+          </button>
+        </div>
+      </div>
+    </fhlbny-panel>        
+</form>
+<sun-modal [headerTitle]="'Delete'" #deleteModal>
+    <div sun-modal-body>
+      <p id="jhi-delete-cource-heading">You are about to delete this record. Are you sure? </p>
+    </div>
+    <div sun-modal-footer>
+      <button type="button" class="btn btn-danger" (click)="delete()" id="jhi-confirm-delete-course">Delete</button>
+      <button type="button" class="btn btn-secondary"  (click)="closeDeleteModal(deleteModal)" id="btn_confirm_cancels">Cancel</button>
+    </div>
+  </sun-modal>

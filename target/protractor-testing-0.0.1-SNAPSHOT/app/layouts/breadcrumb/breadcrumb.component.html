@@ -1,0 +1,21 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb  mx-2 mb-0 bg-transparent">
+    <li *ngIf="breadcrumbData.home" class="breadcrumb-item">
+      <a href="#" routerLink="/">{{breadcrumbData.home}}</a>
+    </li>
+    <li *ngIf="breadcrumbData.menu" class="breadcrumb-item">
+      <a  >{{breadcrumbData.menu}}</a>
+    </li>
+    <li *ngIf="breadcrumbData.subMenu" class="breadcrumb-item">
+      <a href="javascript:void(0)">{{breadcrumbData.subMenu}}</a>
+    </li>
+    <li *ngIf="breadcrumbData.entity" class="breadcrumb-item">
+      <a href="javascript:void(0)" class="breadcrumb-link" *ngIf="! breadcrumbData.entityEdit" (click)="refresh()" >{{breadcrumbData.entity}}</a>
+      <a href="javascript:void(0)" class="breadcrumb-link" *ngIf="breadcrumbData.entityEdit" (click)="routeTo()" >{{breadcrumbData.entity}}</a>        
+    </li>
+    <li *ngIf="breadcrumbData.entityEdit" class="breadcrumb-item">
+      <a >{{breadcrumbData.entityEdit}}</a>
+    </li>
+  </ol>
+</nav>
+

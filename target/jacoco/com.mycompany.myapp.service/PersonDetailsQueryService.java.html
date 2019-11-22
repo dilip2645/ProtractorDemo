@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PersonDetailsQueryService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Protractor Testing</a> &gt; <a href="index.source.html" class="el_package">com.mycompany.myapp.service</a> &gt; <span class="el_source">PersonDetailsQueryService.java</span></div><h1>PersonDetailsQueryService.java</h1><pre class="source lang-java linenums">package com.mycompany.myapp.service;
+
+import java.util.List;
+
+import javax.persistence.criteria.JoinType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import io.github.jhipster.service.QueryService;
+
+import com.mycompany.myapp.domain.PersonDetails;
+import com.mycompany.myapp.domain.*; // for static metamodels
+import com.mycompany.myapp.repository.PersonDetailsRepository;
+import com.mycompany.myapp.service.dto.PersonDetailsCriteria;
+
+/**
+ * Service for executing complex queries for {@link PersonDetails} entities in the database.
+ * The main input is a {@link PersonDetailsCriteria} which gets converted to {@link Specification},
+ * in a way that all the filters must apply.
+ * It returns a {@link List} of {@link PersonDetails} or a {@link Page} of {@link PersonDetails} which fulfills the criteria.
+ */
+@Service
+@Transactional(readOnly = true)
+public class PersonDetailsQueryService extends QueryService&lt;PersonDetails&gt; {
+
+<span class="nc" id="L32">    private final Logger log = LoggerFactory.getLogger(PersonDetailsQueryService.class);</span>
+
+    private final PersonDetailsRepository personDetailsRepository;
+
+<span class="nc" id="L36">    public PersonDetailsQueryService(PersonDetailsRepository personDetailsRepository) {</span>
+<span class="nc" id="L37">        this.personDetailsRepository = personDetailsRepository;</span>
+<span class="nc" id="L38">    }</span>
+
+    /**
+     * Return a {@link List} of {@link PersonDetails} which matches the criteria from the database.
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the matching entities.
+     */
+    @Transactional(readOnly = true)
+    public List&lt;PersonDetails&gt; findByCriteria(PersonDetailsCriteria criteria) {
+<span class="nc" id="L47">        log.debug(&quot;find by criteria : {}&quot;, criteria);</span>
+<span class="nc" id="L48">        final Specification&lt;PersonDetails&gt; specification = createSpecification(criteria);</span>
+<span class="nc" id="L49">        return personDetailsRepository.findAll(specification);</span>
+    }
+
+    /**
+     * Return a {@link Page} of {@link PersonDetails} which matches the criteria from the database.
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @param page The page, which should be returned.
+     * @return the matching entities.
+     */
+    @Transactional(readOnly = true)
+    public Page&lt;PersonDetails&gt; findByCriteria(PersonDetailsCriteria criteria, Pageable page) {
+<span class="nc" id="L60">        log.debug(&quot;find by criteria : {}, page: {}&quot;, criteria, page);</span>
+<span class="nc" id="L61">        final Specification&lt;PersonDetails&gt; specification = createSpecification(criteria);</span>
+<span class="nc" id="L62">        return personDetailsRepository.findAll(specification, page);</span>
+    }
+
+    /**
+     * Return the number of matching entities in the database.
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(PersonDetailsCriteria criteria) {
+<span class="nc" id="L72">        log.debug(&quot;count by criteria : {}&quot;, criteria);</span>
+<span class="nc" id="L73">        final Specification&lt;PersonDetails&gt; specification = createSpecification(criteria);</span>
+<span class="nc" id="L74">        return personDetailsRepository.count(specification);</span>
+    }
+
+    /**
+     * Function to convert ConsumerCriteria to a {@link Specification}
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the matching {@link Specification} of the entity.
+     */    
+    protected Specification&lt;PersonDetails&gt; createSpecification(PersonDetailsCriteria criteria) {
+<span class="nc" id="L83">        Specification&lt;PersonDetails&gt; specification = Specification.where(null);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (criteria != null) {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (criteria.getId() != null) {</span>
+<span class="nc" id="L86">                specification = specification.and(buildSpecification(criteria.getId(), PersonDetails_.id));</span>
+            }
+<span class="nc bnc" id="L88" title="All 2 branches missed.">            if (criteria.getPersonName() != null) {</span>
+<span class="nc" id="L89">                specification = specification.and(buildStringSpecification(criteria.getPersonName(), PersonDetails_.personName));</span>
+            }
+<span class="nc bnc" id="L91" title="All 2 branches missed.">            if (criteria.getPersonId() != null) {</span>
+<span class="nc" id="L92">                specification = specification.and(buildRangeSpecification(criteria.getPersonId(), PersonDetails_.personId));</span>
+            }
+<span class="nc bnc" id="L94" title="All 2 branches missed.">            if (criteria.getPersonAddress() != null) {</span>
+<span class="nc" id="L95">                specification = specification.and(buildStringSpecification(criteria.getPersonAddress(), PersonDetails_.personAddress));</span>
+            }
+        }
+<span class="nc" id="L98">        return specification;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

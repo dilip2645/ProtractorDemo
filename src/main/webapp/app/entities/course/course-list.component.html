@@ -1,0 +1,114 @@
+<fhlbny-breadcrumb [breadcrumbData]="breadcrumb" (refreshCurrentRoute)="reLoad()"></fhlbny-breadcrumb>
+<div>
+    <fhlbny-panel class="coursePage" id="page-heading" headerTitle="Course">
+            <ng-template #additionalHeaderContent>
+                    <div class="d-flex mr-2">
+                        <form class="d-none d-lg-block form-inline mr-2" [formGroup]="pageSizeSelectionForm">
+                            Show
+                            <select [compareWith]="compareFn" class="form-control form-control-sm mx-2" id="sel_pageSize" formControlName="pageSizeSelector">
+                                <option *ngFor="let pageSize of availablePageSizes" [ngValue]="pageSize">{{pageSize}}</option>
+                            </select>
+                            entries
+                        </form>
+                        <fhlbny-export-controls class="d-flex justify-content-end" (onExport)="onExportClicked($event)"></fhlbny-export-controls>
+                        <div class="d-none d-lg-block ml-2">
+                            <button type="button" id="btn_refresh" class="btn btn-secondary" (click)="reset()">
+                                <fa-icon [icon]="'sync'"></fa-icon> Refresh
+                            </button>
+                            <button type="button" id="jh-create-entity" class="btn btn-secondary" [routerLink]="['../course/course-new']">
+                                <fa-icon [icon]="'plus'"></fa-icon> Add
+                            </button>
+                        </div>
+                        <div class="d-block d-lg-none ml-2 position-absolute" style="right: 10px">
+                            <button  class="border-right border-left" type="button" id="btn_refresh" (click)="reset()">
+                                <fa-icon [icon]="'sync'"></fa-icon>
+                            </button>
+                            <button class="border-left" type="button" id="btn_add"  [routerLink]="['../course/course-new']">
+                                <fa-icon [icon]="'plus'"></fa-icon>
+                            </button>
+                        </div>
+                    </div>
+                </ng-template
+                >
+    <div class="table-responsive" *ngIf="courses?.length > 0" >
+        <table class="table table-bordered table-striped table-hover table-sm" style="border: 1px solid transparent;">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id" class="text-center border-0 d-none"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="courseName" class="text-center border-0"><span>Course Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="courseFee" class="text-center border-0"><span>Course Fee</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="courseDuration" class="text-center border-0"><span>Course Duration</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let course of courses ;trackBy: trackId" id="jh-edit-entity" [routerLink]="['/course', course.id, 'edit' ]">
+                <td class="text-center d-none"><a >{{course.id}}</a></td>
+                    <td class="text-center">{{course.courseName}}</td>
+                    <td class="text-center">{{course.courseFee}}</td>
+                    <td class="text-center">{{course.courseDuration}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div [hidden]="courses?.length === 0">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="totalItems" [maxSize]="5" [itemsPerPage]="pageData.itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="pageData.itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+</fhlbny-panel>   
+</div>
+</div>
+<form [formGroup]="searchFilterForm" (ngSubmit)="onSearchSubmit($event)">
+    <fhlbny-panel headerTitle="Search Controls">
+        <div class="form-group row">
+            <div class="col-lg-3 col-md-4 col-sm-6 d-none">
+                <label for="id" class="col-form-label font-weight-bold">
+                    Id
+                </label>
+                <div class="input-group">
+                    <input id="field_id" name="id" class="form-control form-control-sm" formControlName="id" type="number" placeholder="Enter Id" />
+                </div>
+            </div>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <label for="courseName" class="col-form-label font-weight-bold">
+                        courseName
+                    </label>
+                    <div class="input-group">
+                        <input id="field_courseName" name="courseName" class="form-control form-control-sm" formControlName="courseName" type="text" placeholder="Enter courseName"
+                        />
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <label for="courseFee" class="col-form-label font-weight-bold">
+                        courseFee
+                    </label>
+                    <div class="input-group">
+                        <input id="field_courseFee" name="courseFee" class="form-control form-control-sm" formControlName="courseFee" type="text" placeholder="Enter courseFee"
+                        />
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <label for="courseDuration" class="col-form-label font-weight-bold">
+                        courseDuration
+                    </label>
+                    <div class="input-group">
+                        <input id="field_courseDuration" name="courseDuration" class="form-control form-control-sm" formControlName="courseDuration" type="text" placeholder="Enter courseDuration"
+                        />
+                    </div>
+                </div>
+        </div>
+        <div class="form-group row mb-0">
+            <div class="col-sm-12 text-right">
+                <button id="btn_search"  class="btn btn-primary" type="submit">
+                    <i class="fa fa-search"></i> Search
+                </button>
+                <button id="btn_reset" class="btn btn-secondary" (click)="resetSearchFilter()">
+                    Reset
+                </button>
+            </div>
+        </div>
+    </fhlbny-panel>
+</form>

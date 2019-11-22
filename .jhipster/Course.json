@@ -1,0 +1,27 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "courseName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "courseFee",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "courseDuration",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20191114114922",
+    "dto": "no",
+    "searchEngine": false,
+    "service": "serviceClass",
+    "entityTableName": "course",
+    "databaseType": "sql",
+    "jpaMetamodelFiltering": true,
+    "pagination": "pagination"
+}
